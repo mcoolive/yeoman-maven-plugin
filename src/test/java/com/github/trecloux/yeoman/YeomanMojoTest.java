@@ -3,6 +3,7 @@ package com.github.trecloux.yeoman;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
@@ -57,7 +58,6 @@ public class YeomanMojoTest extends AbstractMojoTestCase {
         );
     }
 
-
     public void test_should_run_all_commands_with_custom_args() throws Exception {
         YeomanMojo yeomanMojo = (YeomanMojo) lookupMojo("build", "src/test/resources/test-mojo-configuration-pom.xml");
 
@@ -75,8 +75,20 @@ public class YeomanMojoTest extends AbstractMojoTestCase {
         );
     }
 
-    private List<String> executeMojoAndCaptureCommands(YeomanMojo yeomanMojo) throws MojoExecutionException {
-        YeomanMojo spy = spy(yeomanMojo);
+    public void test_should_run_clean_with_default_configuration() throws Exception {
+        MavenProject project = getMavenProject("src/test/resources/test-mojo-default-pom.xml");
+        CleanYeomanMojo yeomanMojo = (CleanYeomanMojo) lookupConfiguredMojo(project, "clean");
+
+        List<String> commands = executeMojoAndCaptureCommands(yeomanMojo);
+
+        assertThat(commands).containsExactly(
+                "grunt --version",
+                "grunt clean"
+        );
+    }
+
+    private List<String> executeMojoAndCaptureCommands(AbstractYeomanMojo yeomanMojo) throws MojoExecutionException, MojoFailureException {
+        AbstractYeomanMojo spy = spy(yeomanMojo);
         ArgumentCaptor<String> commandsCaptor = ArgumentCaptor.forClass(String.class);
         doNothing().when(spy).executeCommand(commandsCaptor.capture());
 
