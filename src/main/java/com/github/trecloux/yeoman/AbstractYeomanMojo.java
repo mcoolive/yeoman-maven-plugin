@@ -37,23 +37,26 @@ public abstract class AbstractYeomanMojo extends AbstractMojo {
     @Parameter( property = "yo.skip", defaultValue = "false")
     boolean skip;
 
-    void logToolVersion(final String toolName) throws MojoExecutionException {
+    @Parameter( defaultValue = "install", required = true )
+    String npmInstallArgs;
+
+    protected void logToolVersion(final String toolName) throws MojoExecutionException {
         getLog().info(toolName + " version :");
         executeCommand(toolName + " --version");
     }
 
-    void logAndExecuteCommand(String command) throws MojoExecutionException {
+    protected void logAndExecuteCommand(final String command) throws MojoExecutionException {
         logCommand(command);
         executeCommand(command);
     }
 
-    void logCommand(String command) {
+    protected void logCommand(final String command) {
         getLog().info("--------------------------------------");
         getLog().info("         " + command.toUpperCase());
         getLog().info("--------------------------------------");
     }
 
-    void executeCommand(String command) throws MojoExecutionException {
+    protected void executeCommand(String command) throws MojoExecutionException {
         try {
             if (isWindows()) {
                 command = "cmd /c " + command;
@@ -65,6 +68,12 @@ public abstract class AbstractYeomanMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Error during : " + command, e);
         }
+    }
+
+    protected void npmInstall() throws MojoExecutionException {
+        logToolVersion("node");
+        logToolVersion("npm");
+        logAndExecuteCommand("npm " + npmInstallArgs);
     }
 
     private boolean isWindows() {

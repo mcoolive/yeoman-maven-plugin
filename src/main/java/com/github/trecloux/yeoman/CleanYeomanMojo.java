@@ -23,14 +23,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Mojo( name = "clean" )
 public class CleanYeomanMojo extends AbstractYeomanMojo {
 
-	public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException {
         if (skip) {
             getLog().info("Skipping Yeoman Execution");
         } else {
+            npmInstall();
             gruntClean();
         }
-	}
-	
+    }
+
     void gruntClean() throws MojoExecutionException {
         logToolVersion("grunt");
         logAndExecuteCommand("grunt clean");

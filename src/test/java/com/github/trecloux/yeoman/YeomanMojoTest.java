@@ -82,6 +82,9 @@ public class YeomanMojoTest extends AbstractMojoTestCase {
         List<String> commands = executeMojoAndCaptureCommands(yeomanMojo);
 
         assertThat(commands).containsExactly(
+                "node --version",
+                "npm --version",
+                "npm install",
                 "grunt --version",
                 "grunt clean"
         );

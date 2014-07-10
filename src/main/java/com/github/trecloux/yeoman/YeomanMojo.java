@@ -24,8 +24,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo( name = "build", defaultPhase = LifecyclePhase.PREPARE_PACKAGE )
 public class YeomanMojo extends AbstractYeomanMojo {
 
-    @Parameter( defaultValue = "install", required = true )
-    String npmInstallArgs;
     @Parameter( defaultValue = "install --no-color", required = true )
     String bowerInstallArgs;
     @Parameter( defaultValue = "test --no-color", required = true )
@@ -41,12 +39,6 @@ public class YeomanMojo extends AbstractYeomanMojo {
             bowerInstall();
             grunt();
         }
-    }
-
-    void npmInstall() throws MojoExecutionException {
-        logToolVersion("node");
-        logToolVersion("npm");
-        logAndExecuteCommand("npm "+ npmInstallArgs);
     }
 
     void bowerInstall() throws MojoExecutionException {
